@@ -1,0 +1,13 @@
+name: markdown-links
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions: read-all
+
+jobs:
+  markdown-links:
+    permissions:
+      pull-requests: write
+    uses: fish-shop/workflows/.github/workflows/markdown-links.yml@0ab266814f754c4b1706b523a4e90ccd97bcc362 # v1.9.7

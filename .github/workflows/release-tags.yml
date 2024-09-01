@@ -1,0 +1,13 @@
+name: release-tags
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+permissions: read-all
+
+jobs:
+  release-tags:
+    permissions:
+      contents: write
+    uses: fish-shop/workflows/.github/workflows/release-tags.yml@0ab266814f754c4b1706b523a4e90ccd97bcc362 # v1.9.7
