@@ -8,7 +8,9 @@ A GitHub action for checking indentation in [fish shell](https://fishshell.com) 
 
 <hr>
 
-<img src="example.png">
+Here's an example from the test workflow for [Pond](https://github.com/marcransome/pond):
+
+<img alt="Example job output" src="example.png">
 
 ## Prerequisites
 
