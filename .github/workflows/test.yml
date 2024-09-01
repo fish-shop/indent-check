@@ -1,0 +1,188 @@
+name: tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  release:
+    types:
+      - published
+  schedule:
+    - cron: '30 19 * * *'
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Install fish shell
+        uses: fish-shop/install-fish-shell@a138cde6621a975172321d698e3bb025ff2f2004 # v1.0.15
+      - name: Create fish shell file with valid indentation
+        run: |
+          echo "\
+          function valid-indentation
+              echo "valid-indentation"
+          end" > ./valid-indentation.fish
+        shell: fish {0}
+      - name: Check indentation of valid fish shell file
+        id: passing-checks
+        continue-on-error: true
+        uses: ./
+        with:
+          patterns: valid-indentation.fish
+          title: 'Passing indentation checks summary'
+      - name: Check passing indentation checks outcome
+        run: |
+          if test "${{ steps.passing-checks.outcome }}" != "success"
+              echo "Action is expected to succeed for file with valid indentation"
+              exit 1
+          end
+        shell: fish {0}
+      - name: Check passing indentation checks output parameters
+        env:
+          TOTAL: ${{ steps.passing-checks.outputs.total }}
+          PASSED: ${{ steps.passing-checks.outputs.passed }}
+          FAILED: ${{ steps.passing-checks.outputs.failed }}
+        run: |
+          set failures 0
+
+          set expected_total 1
+          if test "$TOTAL" != "$expected_total"
+              echo "Output parameter 'total' should equal $expected_total (got '$TOTAL')"
+              set failures (math $failures + 1)
+          else
+              echo "Output parameter 'total' equals expected value $expected_total"
+          end
+
+          set expected_passes 1
+          if test "$PASSED" != "$expected_passes"
+              echo "Output parameter 'passed' should equal $expected_passes (got '$PASSED')"
+              set failures (math $failures + 1)
+          else
+              echo "Output parameter 'passed' equals expected value $expected_passes"
+          end
+
+          set expected_failures 0
+          if test "$FAILED" != "$expected_failures"
+              echo "Output parameter 'failed' should equal $expected_failures (got '$FAILED')"
+              set failures (math $failures + 1)
+          else
+              echo "Output parameter 'failed' equals expected value $expected_failures"
+          end
+
+          exit $failures
+        shell: fish {0}
+      - name: Create fish shell file with invalid indentation
+        run: |
+          echo "\
+          function invalid-indentation
+          echo "invalid-indentation"
+          end" > ./invalid-indentation.fish
+        shell: fish {0}
+      - name: Check indentation of invalid fish shell file
+        id: failing-checks
+        continue-on-error: true
+        uses: ./
+        with:
+          patterns: invalid-indentation.fish
+          title: 'Failing indentation checks summary'
+      - name: Check failing indentation checks outcome
+        run: |
+          if test "${{ steps.failing-checks.outcome }}" != "failure"
+              echo "Action is expected to fail for file with invalid indentation"
+              exit 1
+          end
+        shell: fish {0}
+      - name: Check failing indentation checks output parameters
+        env:
+          TOTAL: ${{ steps.failing-checks.outputs.total }}
+          PASSED: ${{ steps.failing-checks.outputs.passed }}
+          FAILED: ${{ steps.failing-checks.outputs.failed }}
+        run: |
+          set failures 0
+
+          set expected_total 1
+          if test "$TOTAL" != "$expected_total"
+              echo "Output parameter 'total' should equal $expected_total (got '$TOTAL')"
+              set failures (math $failures + 1)
+          else
+              echo "Output parameter 'total' equals expected value $expected_total"
+          end
+
+          set expected_passes 0
+          if test "$PASSED" != "$expected_passes"
+              echo "Output parameter 'passed' should equal $expected_passes (got '$PASSED')"
+              set failures (math $failures + 1)
+          else
+              echo "Output parameter 'passed' equals expected value $expected_passes"
+          end
+
+          set expected_failures 1
+          if test "$FAILED" != "$expected_failures"
+              echo "Output parameter 'failed' should equal $expected_failures (got '$FAILED')"
+              set failures (math $failures + 1)
+          else
+              echo "Output parameter 'failed' equals expected value $expected_failures"
+          end
+
+          exit $failures
+        shell: fish {0}
+      - name: Check indentation of mixed valid/invalid fish shell files
+        id: mixed-checks
+        continue-on-error: true
+        uses: ./
+        with:
+          patterns: 'valid-indentation.fish invalid-indentation.fish'
+          title: 'Mixed indentation checks summary'
+      - name: Check mixed valid/invalid indentation checks outcome
+        run: |
+          if test "${{ steps.mixed-checks.outcome }}" != "failure"
+              echo "Action is expected to fail for file with invalid indentation"
+              exit 1
+          end
+        shell: fish {0}
+      - name: Check mixed valid/invalid indentation checks output parameters
+        env:
+          TOTAL: ${{ steps.mixed-checks.outputs.total }}
+          PASSED: ${{ steps.mixed-checks.outputs.passed }}
+          FAILED: ${{ steps.mixed-checks.outputs.failed }}
+        run: |
+          set failures 0
+
+          set expected_total 2
+          if test "$TOTAL" != "$expected_total"
+              echo "Output parameter 'total' should equal $expected_total (got '$TOTAL')"
+              set failures (math $failures + 1)
+          else
+              echo "Output parameter 'total' equals expected value $expected_total"
+          end
+
+          set expected_passes 1
+          if test "$PASSED" != "$expected_passes"
+              echo "Output parameter 'passed' should equal $expected_passes (got '$PASSED')"
+              set failures (math $failures + 1)
+          else
+              echo "Output parameter 'passed' equals expected value $expected_passes"
+          end
+
+          set expected_failures 1
+          if test "$FAILED" != "$expected_failures"
+              echo "Output parameter 'failed' should equal $expected_failures (got '$FAILED')"
+              set failures (math $failures + 1)
+          else
+              echo "Output parameter 'failed' equals expected value $expected_failures"
+          end
+
+          exit $failures
+        shell: fish {0}
