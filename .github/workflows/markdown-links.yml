@@ -11,4 +11,4 @@ jobs:
     name: Markdown Links Check
     permissions:
       pull-requests: write
-    uses: fish-shop/workflows/.github/workflows/markdown-links.yml@5f95f810f8716ed65452165bab6f3d89a606397e # v1.13.0
+    uses: fish-shop/workflows/.github/workflows/markdown-links.yml@aa887a1b2cad260ce7c8aa0963dce0db38844bff # v1.13.2
