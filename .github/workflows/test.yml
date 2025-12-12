@@ -30,13 +30,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Harden runner
-        uses: step-security/harden-runner@df199fb7be9f65074067a9eb93f12bb4c5547cf2 # v2.13.3
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
         with:
           egress-policy: audit
       - name: Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       - name: Install fish shell
-        uses: fish-shop/install-fish-shell@ab6846e501e987d9bbdaa8418a458304ef8e73bf # v2.0.36
+        uses: fish-shop/install-fish-shell@44a7182b88c709f59d76c48f6056bad638acb31f # v2.0.37
       - name: Create fish shell file with valid indentation
         run: |
           echo "\
