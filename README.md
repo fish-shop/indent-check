@@ -22,14 +22,14 @@ Add a `uses` step to your GitHub [workflow](https://docs.github.com/en/actions/r
 
 ```yaml
 - name: Indent check
-  uses: fish-shop/indent-check@v1
+  uses: fish-shop/indent-check@v2
 ```
 
 By default, all files under `$GITHUB_WORKSPACE` with a `.fish` file extension are checked. To override the default behaviour, provide one or more space-separated pattern values to the `patterns` input. For example, to check all `.fish` files starting in the `src` directory and descending into subdirectories:
 
 ```yaml
 - name: Indent check
-  uses: fish-shop/indent-check@v1
+  uses: fish-shop/indent-check@v2
   with:
     patterns: src/**.fish
 ```
@@ -38,7 +38,7 @@ Each pattern value may include [wildcards](https://fishshell.com/docs/current/la
 
 ```yaml
 - name: Indent check
-  uses: fish-shop/indent-check@v1
+  uses: fish-shop/indent-check@v2
   with:
     patterns: init.fish functions/**.fish {conf.d,completions}/**.fish tests/???-*.fish
 ```
